@@ -1,47 +1,49 @@
-const express = require("express");
-const cors = require("cors");
+const express = require("express"); // add library plugins to node
+const cors = require("cors"); // Cross-origin resource sharing
+//allows restricted resources on a web page to be requested from another domain outside
+const { uuid } = require("uuidv4"); // random ID
+const app = express(); // variable to run function express
 
-const { uuid } = require("uuidv4");
-
-const app = express();
-
-app.use(express.json());
+app.use(express.json()); // use value active plugins
 app.use(cors());
 
-const repositories = [];
+const repositories = []; // variable with empty array (to add objects)
 
 app.get("/repositories", (request, response) => {
-  return response.json(repositories);
+  return response.json(repositories); // load page repositories static
 });
 
 app.post("/repositories", (request, response) => {
-  const { title, url, techs } = request.body;
+  const { title, url, techs } = request.body; // all variable have request.body
   const repository = {
-    id: uuid(),
-    title,
-    url,
-    techs,
-    likes: 0,
+    // OBJECT
+    id: uuid(), // random id user dynamic
+    title, // static (title: title = title,)
+    url, // static   (property: value)
+    techs, // static
+    likes: 0, // static starting in 0
   };
-  repositories.push(repository);
+  repositories.push(repository); // add array
 
-  return response.json(repository);
+  return response.json(repository); // return response in format json
 });
 
 app.put("/repositories/:id", (request, response) => {
-  const { id } = request.params;
-  const { title, url, techs } = request.body;
-
+  const { id } = request.params; // :id changing
+  const { title, url, techs } = request.body; // example.com or /title or /techs
+  //Array.findIndex()
   const repository = repositories.findIndex(
-    (repository) => repository.id === id
+    //returns the index of the first element in the array
+    (repository) => repository.id === id // repository.request.params = id(uuid);
   );
+  // condition - when dont have id return error 400
   if (repository < 0) {
     return response.status(400).json({ err: "Repository not found" });
   }
-  const oldRepository = repositories[repository];
+  const oldRepository = repositories[repository]; // pass an empty variable to old variable
 
   const updateRepository = {
-    ...oldRepository,
+    ...oldRepository, // ... take all information about variable
     title,
     url,
     techs,
@@ -63,9 +65,9 @@ app.delete("/repositories/:id", (request, response) => {
     return response.status(400).json({ err: "Repository not found" });
   }
 
-  repositories.splice(repository, 1);
+  repositories.splice(repository, 1); // removing or replacing existing elements and/or adding new elements
 
-  return response.status(204).send();
+  return response.status(204).send(); // return status 204
 });
 
 app.post("/repositories/:id/like", (request, response) => {
@@ -74,7 +76,7 @@ app.post("/repositories/:id/like", (request, response) => {
   if (!repository) {
     return response.status(400).send();
   }
-  repository.likes += 1;
+  repository.likes += 1; // count +1 in likes property
 
   return response.json(repository);
 });
