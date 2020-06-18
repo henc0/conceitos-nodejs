@@ -35,7 +35,7 @@ app.put("/repositories/:id", (request, response) => {
   const repository = repositories.findIndex(
     (repository) => repository.id === id
   );
-  if (repository === -1) {
+  if (repository < 0) {
     return response.status(400).json({ err: "Repository not found" });
   }
   const oldRepository = repositories[repository];
@@ -59,7 +59,7 @@ app.delete("/repositories/:id", (request, response) => {
     (repository) => repository.id === id
   );
 
-  if (repository === -1) {
+  if (repository < 0) {
     return response.status(400).json({ err: "Repository not found" });
   }
 
